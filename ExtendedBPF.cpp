@@ -43,17 +43,15 @@ void Graph::print() {
 }
 
 bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
-    if(visited[v] == false)
-    {
+    if (visited[v] == false) {
         // Mark the current node as visited and part of recursion stack
         visited[v] = true;
         recStack[v] = true;
 
         // Recur for all the vertices adjacent to this vertex
         list<int>::iterator i;
-        for(i = adj[v].begin(); i != adj[v].end(); ++i)
-        {
-            if ( !visited[*i] && DFSUtil(*i, visited, recStack) )
+        for (i = adj[v].begin(); i != adj[v].end(); ++i) {
+            if (!visited[*i] && DFSUtil(*i, visited, recStack))
                 return true;
             else if (recStack[*i])
                 return true;
@@ -71,15 +69,14 @@ string Graph::DFS(int v) {
         recStack[i] = false;
         visited[i] = false;
     }
-//    for(int i = 0; i < V; i++)
-        if (DFSUtil(0, visited, recStack))
-            return " fail ciclo";
+    if (DFSUtil(0, visited, recStack))
+        return " FAIL: cycle detected";
 
     for (int i = 0; i < V; i++) {
         if (!visited[i])
-            return " fail unvisited";
+            return " FAIL: unused instructions detected";
     }
-    return " ok";
+    return " GOOD";
 }
 
 void Graph::addEdge(int v, int w) {
@@ -146,10 +143,10 @@ std::string ExtendedBPF::process() {
                     g.addEdge(lines, labelsToIdx[v[idx + 1]]);
                 } else if (v.size() == 3 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 2]]);
-                    if (labelsToIdx[v[idx + 2]] != lines+1)
+                    if (labelsToIdx[v[idx + 2]] != lines + 1)
                         g.addEdge(lines, lines + 1);
                 } else if (v.size() == 4 + idx) {
-                    g.addEdge(lines, labelsToIdx[v[idx + 2].substr(0, v[idx+2].length()-1)]);
+                    g.addEdge(lines, labelsToIdx[v[idx + 2].substr(0, v[idx + 2].length() - 1)]);
                     g.addEdge(lines, labelsToIdx[v[idx + 3]]);
                 }
             } else if (v[idx].find("ret") != std::string::npos) {
