@@ -46,7 +46,6 @@ int main(int argc, char **argv) {
         threads[i].join();
     }
 
-
     for (unsigned int i = 0; i < numOfThreads; i++) {
         locker[i].printResult();
     }
@@ -58,17 +57,15 @@ Locker::Locker(FileProcessor &fileProcessor, ResultsProcessor &resultsProcessor)
 
 void Locker::printResult() const {
     while (resultsProcessor.hasResults()) {
-        std::string temp = resultsProcessor.getResult();
-        std::cout << "\n result filee: " << temp;
+        cout << resultsProcessor.getResult();
     }
 
 }
 
 void Locker::operator()() {
     while (fileProcessor.hasFiles()) {
-        std::string temp = fileProcessor.getFile();
-        std::cout << "\n processing filee: " << temp;
-        ExtendedBPF extendedBpf = ExtendedBPF(temp);
-        resultsProcessor.addResult(temp + extendedBpf.process());
+        std::string filename = fileProcessor.getFile();
+        ExtendedBPF extendedBpf = ExtendedBPF(filename);
+        resultsProcessor.addResult(filename, extendedBpf.process());
     }
 }

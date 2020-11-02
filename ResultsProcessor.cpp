@@ -5,9 +5,9 @@ ResultsProcessor::ResultsProcessor() {
 
 }
 
-void ResultsProcessor::addResult(std::string name) {
+void ResultsProcessor::addResult(std::string filename, std::string result) {
     Lock l(this->mutex);
-    this->results.push_back(name);
+    this->results.push_back(filename + " " + result);
 }
 
 std::string ResultsProcessor::getResult() {

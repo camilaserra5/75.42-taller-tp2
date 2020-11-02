@@ -8,7 +8,7 @@ class ResultsProcessor {
 public:
     ResultsProcessor();
 
-    void addResult(std::string name);
+    void addResult(std::string filename, std::string result);
 
     std::string getResult();
 
