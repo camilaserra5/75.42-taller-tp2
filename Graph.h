@@ -19,7 +19,7 @@ public:
 
     void addEdge(int v, int w);
 
-    std::string DFS(int v);
+    string DFS();
 };
 
 #endif //GRAPH_H
