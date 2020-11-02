@@ -68,9 +68,7 @@ std::string ExtendedBPF::process() {
                     g.addEdge(lines, labelsToIdx[v[idx + 2].substr(0, v[idx + 2].length() - 1)]);
                     g.addEdge(lines, labelsToIdx[v[idx + 3]]);
                 }
-            } else if (v[idx].find("ret") != std::string::npos) {
-                // nada
-            } else {
+            } else if (v[idx].find("ret") == std::string::npos) {
                 g.addEdge(lines, lines + 1);
             }
             lines++;
