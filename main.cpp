@@ -6,6 +6,8 @@
 #include "ExtendedBPF.h"
 #include "ResultsProcessor.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 class Locker {
 public:
@@ -34,9 +36,6 @@ int main(int argc, char **argv) {
     locker.reserve(numOfThreads);
     for (unsigned int i = 0; i < numOfThreads; i++) {
         locker.push_back(Locker(fileProcessor, resultsProcessor));
-    }
-
-    for (unsigned int i = 0; i < numOfThreads; i++) {
         threads.push_back(std::thread(std::ref(locker[i])));
     }
 

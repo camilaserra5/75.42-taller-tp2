@@ -27,6 +27,19 @@ std::vector <std::string> split(std::string s, std::string delimiter) {
 }
 
 
+bool isJumpInstruction(std::string instruction) {
+    std::set <std::string> jumpInstructions{"jmp", "ja",
+                                            "jeq", "jneq",
+                                            "jne", "jlt",
+                                            "jle", "jgt",
+                                            "jge", "jset"};
+    return jumpInstructions.find(instruction) != jumpInstructions.end();
+}
+
+bool isLabel(std::string instruction) {
+    return instruction.find(":") != std::string::npos;
+}
+
 std::string ExtendedBPF::process() {
     std::map<std::string, int> labelsToIdx;
     std::ifstream infile(this->filename);
@@ -37,7 +50,7 @@ std::string ExtendedBPF::process() {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
             std::vector <std::string> v = split(iss.str(), " ");
-            if (v[0].find(":") != std::string::npos) {
+            if (isLabel(v[0])) {
                 labelsToIdx[v[0].substr(0, v[0].length() - 1)] = lines;
             }
             lines++;
@@ -51,43 +64,35 @@ std::string ExtendedBPF::process() {
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
-            std::vector <std::string> v = split(iss.str(), " ");
+            std::vector <std::string> instructions = split(iss.str(), " ");
             unsigned int idx = 0;
-            if (v[idx].find(":") != std::string::npos) {
+            if (isLabel(instructions[idx])) {
                 idx++;
             }
-            std::set <std::string> jumpInstructions{"jmp", "ja",
-                                                    "jeq", "jneq",
-                                                    "jne", "jlt",
-                                                    "jle", "jgt",
-                                                    "jge", "jset"};
-            if (jumpInstructions.find(v[idx]) != jumpInstructions.end()) {
-                if (v.size() == 2 + idx) {
-                    g.addEdge(lines, labelsToIdx[v[idx + 1]]);
-                } else if (v.size() == 3 + idx) {
-                    g.addEdge(lines, labelsToIdx[v[idx + 2]]);
-                    if (labelsToIdx[v[idx + 2]] != lines + 1) {
+
+            if (isJumpInstruction(instructions[idx])) {
+                if (instructions.size() == 2 + idx) {
+                    g.addEdge(lines, labelsToIdx[instructions[idx + 1]]);
+                } else if (instructions.size() == 3 + idx) {
+                    g.addEdge(lines, labelsToIdx[instructions[idx + 2]]);
+                    if (labelsToIdx[instructions[idx + 2]] != lines + 1) {
                         g.addEdge(lines, lines + 1);
                     }
-
-                } else if (v.size() == 4 + idx) {
-                    auto idx2 = v[idx + 2];
-                    auto label = idx2.substr(0, idx2.length() - 1);
+                } else if (instructions.size() == 4 + idx) {
+                    std::string label = instructions[idx + 2];
+                    label = label.substr(0, label.length() - 1);
                     g.addEdge(lines, labelsToIdx[label]);
-                    g.addEdge(lines, labelsToIdx[v[idx + 3]]);
+                    g.addEdge(lines, labelsToIdx[instructions[idx + 3]]);
                 }
-            } else if (v[idx].find("ret") == std::string::npos) {
+            } else if (instructions[idx].find("ret") == std::string::npos) {
                 g.addEdge(lines, lines + 1);
             }
             lines++;
         }
     }
     infile.close();
+    
     std::string ret = g.checkCycleOrUnused();
     return ret;
 }
-
-
-
-
 
