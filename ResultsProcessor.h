@@ -11,9 +11,7 @@ public:
 
     void addResult(std::string filename, std::string result);
 
-    std::string getResult();
-
-    bool hasResults();
+    void printResult();
 
 private:
     std::vector<std::string> results;

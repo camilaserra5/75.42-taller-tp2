@@ -9,15 +9,18 @@
 
 class Graph {
     int V;
-    std::vector<std::vector<int>> adj;
+    std::vector <std::vector<int>> adj;
 
-    bool DFSUtil(int v, std::vector<bool>& visited, std::vector<bool> &recStack);
+    bool DFSUtil(int v, std::vector<bool> &visited,
+                 std::vector<bool> &recStack);
 
 public:
     explicit Graph(int V);
 
     ~Graph();
+
     void print();
+
     void addEdge(int v, int w);
 
     std::string checkCycleOrUnused();

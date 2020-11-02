@@ -13,8 +13,6 @@ public:
 
     void operator()();
 
-    void printResult() const;
-
 private:
     FileProcessor &fileProcessor;
     ResultsProcessor &resultsProcessor;
@@ -46,20 +44,12 @@ int main(int argc, char **argv) {
         threads[i].join();
     }
 
-    for (unsigned int i = 0; i < numOfThreads; i++) {
-        locker[i].printResult();
-    }
+    resultsProcessor.printResult();
 }
 
 Locker::Locker(FileProcessor &fileProcessor,
                ResultsProcessor &resultsProcessor) :
         fileProcessor(fileProcessor), resultsProcessor(resultsProcessor) {}
-
-void Locker::printResult() const {
-    while (resultsProcessor.hasResults()) {
-        std::cout << resultsProcessor.getResult() << std::endl;
-    }
-}
 
 void Locker::operator()() {
     while (fileProcessor.hasFiles()) {
