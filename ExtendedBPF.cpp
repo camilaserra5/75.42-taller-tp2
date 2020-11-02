@@ -80,9 +80,8 @@ string Graph::DFS(int v) {
 }
 
 void Graph::addEdge(int v, int w) {
-    adj[v].push_back(w); // Add w to v’s list.
+    adj[v].push_back(w);
 }
-
 
 vector <string> split(string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -92,7 +91,8 @@ vector <string> split(string s, string delimiter) {
     while ((pos_end = s.find(delimiter, pos_start)) != string::npos) {
         token = s.substr(pos_start, pos_end - pos_start);
         pos_start = pos_end + delim_len;
-        res.push_back(token);
+        if (!token.empty())
+            res.push_back(token);
     }
 
     res.push_back(s.substr(pos_start));
