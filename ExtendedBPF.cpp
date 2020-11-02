@@ -16,7 +16,7 @@ using namespace std;
 class Graph {
     int V;    // No. of vertices
     list<int> *adj;    // Pointer to an array containing adjacency lists
-    bool DFSUtil(int v, bool visited[]);
+    bool DFSUtil(int v, bool visited[], bool *recStack);
 
 public:
     Graph(int V);   // Constructor
@@ -42,28 +42,38 @@ void Graph::print() {
 
 }
 
-bool Graph::DFSUtil(int v, bool visited[]) {
-    visited[v] = true;
+bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
+    if(visited[v] == false)
+    {
+        // Mark the current node as visited and part of recursion stack
+        visited[v] = true;
+        recStack[v] = true;
 
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i) {
-        if (!visited[*i]) {
-            if (DFSUtil(*i, visited))
+        // Recur for all the vertices adjacent to this vertex
+        list<int>::iterator i;
+        for(i = adj[v].begin(); i != adj[v].end(); ++i)
+        {
+            if ( !visited[*i] && DFSUtil(*i, visited, recStack) )
                 return true;
-        } else {
-            return true;
+            else if (recStack[*i])
+                return true;
         }
+
     }
+    recStack[v] = false;  // remove the vertex from recursion stack
     return false;
 }
 
 string Graph::DFS(int v) {
     bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
+    bool *recStack = new bool[V];
+    for (int i = 0; i < V; i++) {
+        recStack[i] = false;
         visited[i] = false;
-
-    if (DFSUtil(v, visited))
-        return " fail ciclo";
+    }
+//    for(int i = 0; i < V; i++)
+        if (DFSUtil(0, visited, recStack))
+            return " fail ciclo";
 
     for (int i = 0; i < V; i++) {
         if (!visited[i])
@@ -98,7 +108,7 @@ std::string ExtendedBPF::process() {
     std::ifstream infile(this->filename);
 
     std::string line;
-    unsigned int lines = 0;
+    int lines = 0;
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
@@ -121,14 +131,25 @@ std::string ExtendedBPF::process() {
             if (v[idx].find(":") != std::string::npos) {
                 idx++;
             }
-            if (v[idx].find("jne") != std::string::npos) {
+            if ((v[idx].find("jmp") != std::string::npos) ||
+                (v[idx].find("ja") != std::string::npos) ||
+                (v[idx].find("jeq") != std::string::npos) ||
+                (v[idx].find("jneq") != std::string::npos) ||
+                (v[idx].find("jne") != std::string::npos) ||
+                (v[idx].find("jlt") != std::string::npos) ||
+                (v[idx].find("jle") != std::string::npos) ||
+                (v[idx].find("jgt") != std::string::npos) ||
+                (v[idx].find("jge") != std::string::npos) ||
+                (v[idx].find("jset") != std::string::npos)) {
+
                 if (v.size() == 2 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 1]]);
                 } else if (v.size() == 3 + idx) {
-                    g.addEdge(lines, lines + 1);
                     g.addEdge(lines, labelsToIdx[v[idx + 2]]);
+                    if (labelsToIdx[v[idx + 2]] != lines+1)
+                        g.addEdge(lines, lines + 1);
                 } else if (v.size() == 4 + idx) {
-                    g.addEdge(lines, labelsToIdx[v[idx + 2]]);
+                    g.addEdge(lines, labelsToIdx[v[idx + 2].substr(0, v[idx+2].length()-1)]);
                     g.addEdge(lines, labelsToIdx[v[idx + 3]]);
                 }
             } else if (v[idx].find("ret") != std::string::npos) {
