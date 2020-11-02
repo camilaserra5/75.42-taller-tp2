@@ -1,0 +1,5 @@
+.idea
+*.o
+*.o-tsan
+tp
+tp-tsan
