@@ -49,17 +49,16 @@ int main(int argc, char **argv) {
     for (unsigned int i = 0; i < numOfThreads; i++) {
         locker[i].printResult();
     }
-
 }
 
-Locker::Locker(FileProcessor &fileProcessor, ResultsProcessor &resultsProcessor) :
+Locker::Locker(FileProcessor &fileProcessor,
+               ResultsProcessor &resultsProcessor) :
         fileProcessor(fileProcessor), resultsProcessor(resultsProcessor) {}
 
 void Locker::printResult() const {
     while (resultsProcessor.hasResults()) {
-        cout << resultsProcessor.getResult();
+        std::cout << resultsProcessor.getResult();
     }
-
 }
 
 void Locker::operator()() {

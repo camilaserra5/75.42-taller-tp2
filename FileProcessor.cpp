@@ -1,9 +1,8 @@
 #include "FileProcessor.h"
 #include "Lock.h"
+#include <string>
 
-FileProcessor::FileProcessor() {
-
-}
+FileProcessor::FileProcessor() {}
 
 void FileProcessor::addFile(std::string name) {
     Lock l(this->mutex);

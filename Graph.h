@@ -5,21 +5,20 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-
-using namespace std;
+#include <list>
 
 class Graph {
     int V;
-    list<int> *adj;
+    std::list<int> *adj;
 
     bool DFSUtil(int v, bool visited[], bool *recStack);
 
 public:
-    Graph(int V);
+    explicit Graph(int V);
 
     void addEdge(int v, int w);
 
-    string checkCycleOrUnused();
+    std::string checkCycleOrUnused();
 };
 
 #endif //GRAPH_H

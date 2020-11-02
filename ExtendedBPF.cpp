@@ -3,20 +3,19 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <map>
+#include <vector>
+#include <set>
 #include "Graph.h"
 
-using namespace std;
+ExtendedBPF::ExtendedBPF(std::string filename) : filename(filename) {}
 
-ExtendedBPF::ExtendedBPF(std::string filename) : filename(filename) {
-
-}
-
-vector <string> split(string s, string delimiter) {
+std::vector <std::string> split(std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    string token;
-    vector <string> res;
+    std::string token;
+    std::vector <std::string> res;
 
-    while ((pos_end = s.find(delimiter, pos_start)) != string::npos) {
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
         token = s.substr(pos_start, pos_end - pos_start);
         pos_start = pos_end + delim_len;
         if (!token.empty())
@@ -37,7 +36,7 @@ std::string ExtendedBPF::process() {
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
-            vector <string> v = split(iss.str(), " ");
+            std::vector <std::string> v = split(iss.str(), " ");
             if (v[0].find(":") != std::string::npos) {
                 labelsToIdx[v[0].substr(0, v[0].length() - 1)] = lines;
             }
@@ -52,12 +51,16 @@ std::string ExtendedBPF::process() {
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
-            vector <string> v = split(iss.str(), " ");
+            std::vector <std::string> v = split(iss.str(), " ");
             unsigned int idx = 0;
             if (v[idx].find(":") != std::string::npos) {
                 idx++;
             }
-            std::set <string> jumpInstructions{"jmp", "ja", "jeq", "jneq", "jne", "jlt", "jle", "jgt", "jge", "jset"};
+            std::set <std::string> jumpInstructions{"jmp", "ja",
+                                               "jeq", "jneq",
+                                               "jne", "jlt",
+                                               "jle", "jgt",
+                                               "jge", "jset"};
             if (jumpInstructions.find(v[idx]) != jumpInstructions.end()) {
                 if (v.size() == 2 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 1]]);
@@ -66,7 +69,10 @@ std::string ExtendedBPF::process() {
                     if (labelsToIdx[v[idx + 2]] != lines + 1)
                         g.addEdge(lines, lines + 1);
                 } else if (v.size() == 4 + idx) {
-                    g.addEdge(lines, labelsToIdx[v[idx + 2].substr(0, v[idx + 2].length() - 1)]);
+                    auto idx2 = v[idx + 2];
+                    auto label = idx2.substr(0, idx2.length() - 1);
+                    g.addEdge(lines, labelsToIdx[label]);
+
                     g.addEdge(lines, labelsToIdx[v[idx + 3]]);
                 }
             } else if (v[idx].find("ret") == std::string::npos) {

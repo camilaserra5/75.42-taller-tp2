@@ -1,9 +1,8 @@
 #include "ResultsProcessor.h"
 #include "Lock.h"
+#include <string>
 
-ResultsProcessor::ResultsProcessor() {
-
-}
+ResultsProcessor::ResultsProcessor() {}
 
 void ResultsProcessor::addResult(std::string filename, std::string result) {
     Lock l(this->mutex);

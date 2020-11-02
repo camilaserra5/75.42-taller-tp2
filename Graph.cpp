@@ -3,10 +3,11 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <list>
 
 Graph::Graph(int V) {
     this->V = V;
-    adj = new list<int>[V];
+    adj = new std::list<int>[V];
 }
 
 void Graph::addEdge(int v, int w) {
@@ -18,20 +19,19 @@ bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
         visited[v] = true;
         recStack[v] = true;
 
-        list<int>::iterator i;
+        std::list<int>::iterator i;
         for (i = adj[v].begin(); i != adj[v].end(); ++i) {
             if (!visited[*i] && DFSUtil(*i, visited, recStack))
                 return true;
             else if (recStack[*i])
                 return true;
         }
-
     }
     recStack[v] = false;
     return false;
 }
 
-string Graph::checkCycleOrUnused() {
+std::string Graph::checkCycleOrUnused() {
     bool *visited = new bool[V];
     bool *recStack = new bool[V];
     for (int i = 0; i < V; i++) {

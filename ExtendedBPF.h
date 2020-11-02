@@ -3,10 +3,11 @@
 
 #include <mutex>
 #include <vector>
+#include <string>
 
 class ExtendedBPF {
 public:
-    ExtendedBPF(std::string filename);
+    explicit ExtendedBPF(std::string filename);
 
     std::string process();
 
