@@ -4,19 +4,20 @@
 #include <thread>
 #include "FileProcessor.h"
 #include "ExtendedBPF.h"
+#include "ResultsProcessor.h"
 #include <iostream>
 
 class Locker {
 public:
-    Locker(FileProcessor &accountFrom, ExtendedBPF &accountTo);
+    Locker(FileProcessor &fileProcessor, ResultsProcessor &resultsProcessor);
 
     void operator()();
 
     void printResult() const;
 
 private:
-    FileProcessor &accountFrom;
-    ExtendedBPF &accountTo;
+    FileProcessor &fileProcessor;
+    ResultsProcessor &resultsProcessor;
 };
 
 
@@ -24,17 +25,20 @@ int main(int argc, char **argv) {
     std::vector <std::thread> threads;
     std::vector <Locker> locker;
 
-    FileProcessor ac1;
-    ExtendedBPF ac2;
+    FileProcessor fileProcessor;
+    ResultsProcessor resultsProcessor;
 
     for (int i = 1; i < (argc - 1); i++) {
-        ac1.addFile(argv[i + 1]);
+        fileProcessor.addFile(argv[i + 1]);
     }
 
     unsigned int numOfThreads = atoi(argv[1]);
     locker.reserve(numOfThreads);
     for (unsigned int i = 0; i < numOfThreads; i++) {
-        locker.push_back(Locker(ac1, ac2));
+        locker.push_back(Locker(fileProcessor, resultsProcessor));
+    }
+
+    for (unsigned int i = 0; i < numOfThreads; i++) {
         threads.push_back(std::thread(std::ref(locker[i])));
     }
 
@@ -42,20 +46,29 @@ int main(int argc, char **argv) {
         threads[i].join();
     }
 
+
+    for (unsigned int i = 0; i < numOfThreads; i++) {
+        locker[i].printResult();
+    }
+
 }
 
-Locker::Locker(FileProcessor &accountFrom, ExtendedBPF &accountTo) :
-        accountFrom(accountFrom), accountTo(accountTo) {}
+Locker::Locker(FileProcessor &fileProcessor, ResultsProcessor &resultsProcessor) :
+        fileProcessor(fileProcessor), resultsProcessor(resultsProcessor) {}
 
 void Locker::printResult() const {
-    printf("acFrom: ");
+    while (resultsProcessor.hasResults()) {
+        std::string temp = resultsProcessor.getResult();
+        std::cout << "\n result filee: " << temp;
+    }
+
 }
 
 void Locker::operator()() {
-    while (accountFrom.hasFiles()) {
-        std::cout << "Filee: " << accountFrom.getFile();
+    while (fileProcessor.hasFiles()) {
+        std::string temp = fileProcessor.getFile();
+        std::cout << "\n processing filee: " << temp;
+        ExtendedBPF extendedBpf = ExtendedBPF(temp);
+        resultsProcessor.addResult(temp + extendedBpf.process());
     }
-// dame file
-// proceso
-// guardo resultado
 }

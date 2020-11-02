@@ -2,20 +2,16 @@
 #define EXTENDED_BPF_H
 
 #include <mutex>
+#include <vector>
 
 class ExtendedBPF {
 public:
-    ExtendedBPF();
+    ExtendedBPF(std::string filename);
 
-    void withdraw(int amount);
-
-    void deposit(int amount);
-
-    int getBalance() const;
+    std::string process();
 
 private:
-    int balance;
-    std::mutex mutex;
+    std::string filename;
 };
 
 #endif
