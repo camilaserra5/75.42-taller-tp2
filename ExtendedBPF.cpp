@@ -44,6 +44,7 @@ std::string ExtendedBPF::process() {
             lines++;
         }
     }
+
     Graph g(lines);
     lines = 0;
     infile.clear();
@@ -74,7 +75,7 @@ std::string ExtendedBPF::process() {
             lines++;
         }
     }
-    return g.DFS();
+    return g.checkCycleOrUnused();
 }
 
 

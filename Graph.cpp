@@ -31,7 +31,7 @@ bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
     return false;
 }
 
-string Graph::DFS() {
+string Graph::checkCycleOrUnused() {
     bool *visited = new bool[V];
     bool *recStack = new bool[V];
     for (int i = 0; i < V; i++) {

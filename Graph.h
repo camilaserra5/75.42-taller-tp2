@@ -19,7 +19,7 @@ public:
 
     void addEdge(int v, int w);
 
-    string DFS();
+    string checkCycleOrUnused();
 };
 
 #endif //GRAPH_H
