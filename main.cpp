@@ -57,7 +57,7 @@ Locker::Locker(FileProcessor &fileProcessor,
 
 void Locker::printResult() const {
     while (resultsProcessor.hasResults()) {
-        std::cout << resultsProcessor.getResult();
+        std::cout << resultsProcessor.getResult() << std::endl;
     }
 }
 

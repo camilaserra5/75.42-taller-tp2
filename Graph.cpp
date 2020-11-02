@@ -3,27 +3,29 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <list>
+#include <vector>
 
 Graph::Graph(int V) {
     this->V = V;
-    adj = new std::list<int>[V];
+    adj.resize(V);
 }
+
+Graph::~Graph() {}
 
 void Graph::addEdge(int v, int w) {
     adj[v].push_back(w);
 }
 
-bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
+bool Graph::DFSUtil(int v, std::vector<bool> &visited,
+                    std::vector<bool> &recStack) {
     if (!visited[v]) {
         visited[v] = true;
         recStack[v] = true;
 
-        std::list<int>::iterator i;
-        for (i = adj[v].begin(); i != adj[v].end(); ++i) {
-            if (!visited[*i] && DFSUtil(*i, visited, recStack))
+        for (unsigned int i = 0; i < adj[v].size(); ++i) {
+            if (!visited[adj[v][i]] && DFSUtil(adj[v][i], visited, recStack))
                 return true;
-            else if (recStack[*i])
+            else if (recStack[adj[v][i]])
                 return true;
         }
     }
@@ -32,11 +34,11 @@ bool Graph::DFSUtil(int v, bool visited[], bool *recStack) {
 }
 
 std::string Graph::checkCycleOrUnused() {
-    bool *visited = new bool[V];
-    bool *recStack = new bool[V];
+    std::vector<bool> visited;
+    std::vector<bool> recStack;
     for (int i = 0; i < V; i++) {
-        recStack[i] = false;
-        visited[i] = false;
+        visited.push_back(false);
+        recStack.push_back(false);
     }
 
     if (DFSUtil(0, visited, recStack)) {

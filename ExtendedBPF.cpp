@@ -57,22 +57,23 @@ std::string ExtendedBPF::process() {
                 idx++;
             }
             std::set <std::string> jumpInstructions{"jmp", "ja",
-                                               "jeq", "jneq",
-                                               "jne", "jlt",
-                                               "jle", "jgt",
-                                               "jge", "jset"};
+                                                    "jeq", "jneq",
+                                                    "jne", "jlt",
+                                                    "jle", "jgt",
+                                                    "jge", "jset"};
             if (jumpInstructions.find(v[idx]) != jumpInstructions.end()) {
                 if (v.size() == 2 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 1]]);
                 } else if (v.size() == 3 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 2]]);
-                    if (labelsToIdx[v[idx + 2]] != lines + 1)
+                    if (labelsToIdx[v[idx + 2]] != lines + 1) {
                         g.addEdge(lines, lines + 1);
+                    }
+
                 } else if (v.size() == 4 + idx) {
                     auto idx2 = v[idx + 2];
                     auto label = idx2.substr(0, idx2.length() - 1);
                     g.addEdge(lines, labelsToIdx[label]);
-
                     g.addEdge(lines, labelsToIdx[v[idx + 3]]);
                 }
             } else if (v[idx].find("ret") == std::string::npos) {
@@ -81,7 +82,9 @@ std::string ExtendedBPF::process() {
             lines++;
         }
     }
-    return g.checkCycleOrUnused();
+    infile.close();
+    std::string ret = g.checkCycleOrUnused();
+    return ret;
 }
 
 
