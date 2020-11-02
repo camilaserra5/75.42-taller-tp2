@@ -56,17 +56,8 @@ std::string ExtendedBPF::process() {
             if (v[idx].find(":") != std::string::npos) {
                 idx++;
             }
-            if ((v[idx].find("jmp") != std::string::npos) ||
-                (v[idx].find("ja") != std::string::npos) ||
-                (v[idx].find("jeq") != std::string::npos) ||
-                (v[idx].find("jneq") != std::string::npos) ||
-                (v[idx].find("jne") != std::string::npos) ||
-                (v[idx].find("jlt") != std::string::npos) ||
-                (v[idx].find("jle") != std::string::npos) ||
-                (v[idx].find("jgt") != std::string::npos) ||
-                (v[idx].find("jge") != std::string::npos) ||
-                (v[idx].find("jset") != std::string::npos)) {
-
+            std::set <string> jumpInstructions{"jmp", "ja", "jeq", "jneq", "jne", "jlt", "jle", "jgt", "jge", "jset"};
+            if (jumpInstructions.find(v[idx]) != jumpInstructions.end()) {
                 if (v.size() == 2 + idx) {
                     g.addEdge(lines, labelsToIdx[v[idx + 1]]);
                 } else if (v.size() == 3 + idx) {
@@ -85,7 +76,7 @@ std::string ExtendedBPF::process() {
             lines++;
         }
     }
-    return g.DFS(0);
+    return g.DFS();
 }
 
 
