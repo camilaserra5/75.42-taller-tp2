@@ -61,13 +61,15 @@ Luego, se crean los n hilos y a cada uno se le pasa por referencia un objeto Loc
 Luego, cada hilo ejecutará la siguiente secuencia accediendo a los objetos en común que se encargan de utilizar el mutex para que no haya problemas de concurrencia.
 Cada hilo pide un archivo, y mientras haya disponibles, los procesa y almacena el resultado.
 
-![](http://www.plantuml.com/plantuml/png/jLBDJWCX4BxFKynnc-WBcDGq9lRaeV4DS9bQ8hjiO33x-CwwjikW73qHFkRx-O13OXCv3nukpXAUG-2tC0DCWhhUJMPaV0dz1qK57PsdKmmzfHIYddwbb3sdxRIMKi3pp3HQia-d8u3fsNqQfglZkk3ze_R31xoOj42fssqadKapH68H4wQNfHioqxpJVc19x_zKeDAzf6Xt7y9q6yFz7Zbc0iHsetVY1P92YFzM2R5TwYmdencMbArQga3nSiAUrfdkgbBMK8-CYbW6YDyVfx3NJ6LUVpAX6sjNz9RXxaTIPQcPW1fgNorYVPcMVYDj8oa50%OCY70JEW_y2)
+![](http://www.plantuml.com/plantuml/png/jLBDJWCX4BxFKynnc-WBcDGq9lRaeV4DS9bQ8hjiO33x-CwwjikW73qHFkRx-O13OXCv3nukpXAUG-2tC0DCWhhUJMPaV0dz1qK57PsdKmmzfHIYddwbb3sdxRIMKi3pp3HQia-d8u3fsNqQfglZkk3ze_R31xoOj42fssqadKapH68H4wQNfHioqxpJVc19x_zKeDAzf6Xt7y9q6yFz7Zbc0iHsetVY1P92YFzM2R5TwYmdencMbArQga3nSiAUrfdkgbBMK8-CYbW6YDyVfx3NJ6LUVpAX6sjNz9RXxaTIPQcPW1fgNorYVPcMVYDj8oa25OCY70JEW_y2)
+
 
 El siguiente diagrama muestra como se realiza el procesamiento de cada archivo. Basicamente se realiza 1 pasada por el archivo buscando las etiquetas y se almacena un mapa con <etiqueta, nro de línea>. Luego, en la segunda pasada, se agregan las aristas al grafo de acuerdo a lo pedido.
 Cuando se encuentra un salto, se busca el índice de la etiqueta en el mapa, y se agrega la arista correspondiente.
 Una vez creado el grafo, se busca por ciclos o instrucciones no usadas con DFS.
 
-![](http://www.plantuml.com/plantuml/png/hPB1JiCm38RlUOeSMp4gRTmue0aqqD0aEC03P8stHgH9b3XGtXvdHLjK61lJBbPhV_xzs-qqeF0OMyqQ9O6lhCMbxHWJDLhFA-QegchbX44-wn2C17dxV9_gwbqW4C9g3-afBrVyyYPFy6jkuADOAGr6j53k-lEktzgSjpM4K9ICvGNYr2eWJMu9KYOfP_BQMiVNW0jbOD0tq0zEAomqSUNVe0eBiGHTA4DZ8zctva27JdnuiNFPLKBAOlC-ueg8hcG4Ra_tu8Lh1c9zyljmoLyuTIsXaTm_njRDTzxpFNga4O6FkV3hs8B1VMveaPbSmqPwrAyuJmjbdxJVHi8WGRU0pP39TaWu-vGZ1IbUZFzX-Ueao-EpUawAaoCLIQutdyAPRs8aJs6VQjr0_NRtMMjuygyc1f13oPxyySjw50%7ZmUjKEpHdCofFLsnAwTZgBm00)
+![](http://www.plantuml.com/plantuml/png/hPB1JiCm38RlUOeSMp4gRTmue0aqqD0aEC03P8stHgH9b3XGtXvdHLjK61lJBbPhV_xzs-qqeF0OMyqQ9O6lhCMbxHWJDLhFA-QegchbX44-wn2C17dxV9_gwbqW4C9g3-afBrVyyYPFy6jkuADOAGr6j53k-lEktzgSjpM4K9ICvGNYr2eWJMu9KYOfP_BQMiVNW0jbOD0tq0zEAomqSUNVe0eBiGHTA4DZ8zctva27JdnuiNFPLKBAOlC-ueg8hcG4Ra_tu8Lh1c9zyljmoLyuTIsXaTm_njRDTzxpFNga4O6FkV3hs8B1VMveaPbSmqPwrAyuJmjbdxJVHi8WGRU0pP39TaWu-vGZ1IbUZFzX-Ueao-EpUawAaoCLIQutdyAPRs8aJs6VQjr0_NRtMMjuygyc1f13oPxyySjw257ZmUjKEpHdCofFLsnAwTZgBm00)
+
 ## Pruebas
 Los siguientes casos de pruebas fueron los provistos por la cátedra:
 
