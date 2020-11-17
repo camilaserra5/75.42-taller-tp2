@@ -1,13 +1,10 @@
 #include "FileProcessor.h"
 #include "Lock.h"
 #include <string>
+#include <vector>
 
-FileProcessor::FileProcessor() {}
-
-void FileProcessor::addFile(std::string name) {
-    Lock l(this->mutex);
-    this->files.push_back(name);
-}
+FileProcessor::FileProcessor(std::vector <std::string> files) :
+        files(files) {}
 
 std::string FileProcessor::getFile() {
     Lock l(this->mutex);

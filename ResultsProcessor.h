@@ -11,10 +11,10 @@ public:
 
     void addResult(std::string filename, std::string result);
 
-    void printResult();
+    std::string getResult();
 
 private:
-    std::vector<std::string> results;
+    std::vector <std::string> results;
     std::mutex mutex;
 };
 

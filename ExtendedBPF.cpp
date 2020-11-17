@@ -40,12 +40,10 @@ bool isLabel(std::string instruction) {
     return instruction.find(":") != std::string::npos;
 }
 
-std::string ExtendedBPF::process() {
+std::map<std::string, int> getLabels(std::string filename, int &lines) {
     std::map<std::string, int> labelsToIdx;
-    std::ifstream infile(this->filename);
-
+    std::ifstream infile(filename);
     std::string line;
-    int lines = 0;
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         if (!iss.str().empty()) {
@@ -56,42 +54,52 @@ std::string ExtendedBPF::process() {
             lines++;
         }
     }
+    infile.close();
+    return labelsToIdx;
+}
 
-    Graph g(lines);
-    lines = 0;
-    infile.clear();
-    infile.seekg(0);
-    while (std::getline(infile, line)) {
-        std::istringstream iss(line);
-        if (!iss.str().empty()) {
-            std::vector <std::string> instructions = split(iss.str(), " ");
-            unsigned int idx = 0;
-            if (isLabel(instructions[idx])) {
-                idx++;
-            }
+void processLine(Graph &g, std::string line, int lines,
+                 std::map<std::string, int> labelsToIdx) {
+    std::istringstream iss(line);
 
-            if (isJumpInstruction(instructions[idx])) {
-                if (instructions.size() == 2 + idx) {
-                    g.addEdge(lines, labelsToIdx[instructions[idx + 1]]);
-                } else if (instructions.size() == 3 + idx) {
-                    g.addEdge(lines, labelsToIdx[instructions[idx + 2]]);
-                    if (labelsToIdx[instructions[idx + 2]] != lines + 1) {
-                        g.addEdge(lines, lines + 1);
-                    }
-                } else if (instructions.size() == 4 + idx) {
-                    std::string label = instructions[idx + 2];
-                    label = label.substr(0, label.length() - 1);
-                    g.addEdge(lines, labelsToIdx[label]);
-                    g.addEdge(lines, labelsToIdx[instructions[idx + 3]]);
-                }
-            } else if (instructions[idx].find("ret") == std::string::npos) {
+    std::vector <std::string> instructions = split(iss.str(), " ");
+    unsigned int idx = isLabel(instructions[0]) ? 1 : 0;
+
+    if (isJumpInstruction(instructions[idx])) {
+        if (instructions.size() == 2 + idx) {
+            g.addEdge(lines, labelsToIdx[instructions[idx + 1]]);
+        } else if (instructions.size() == 3 + idx) {
+            g.addEdge(lines, labelsToIdx[instructions[idx + 2]]);
+            if (labelsToIdx[instructions[idx + 2]] != lines + 1) {
                 g.addEdge(lines, lines + 1);
             }
+        } else if (instructions.size() == 4 + idx) {
+            std::string label = instructions[idx + 2];
+            label = label.substr(0, label.length() - 1);
+            g.addEdge(lines, labelsToIdx[label]);
+            g.addEdge(lines, labelsToIdx[instructions[idx + 3]]);
+        }
+    } else if (instructions[idx].find("ret") == std::string::npos) {
+        g.addEdge(lines, lines + 1);
+    }
+}
+
+std::string ExtendedBPF::process() {
+    int lines = 0;
+    std::map<std::string, int> labelsToIdx = getLabels(filename, lines);
+
+    std::ifstream infile(this->filename);
+    Graph g(lines);
+    lines = 0;
+    std::string line;
+    while (std::getline(infile, line)) {
+        if (!line.empty()) {
+            processLine(g, line, lines, labelsToIdx);
             lines++;
         }
     }
     infile.close();
-    
+
     std::string ret = g.checkCycleOrUnused();
     return ret;
 }

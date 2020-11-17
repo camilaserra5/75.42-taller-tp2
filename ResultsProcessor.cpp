@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 ResultsProcessor::ResultsProcessor() {}
 
@@ -11,10 +12,12 @@ void ResultsProcessor::addResult(std::string filename, std::string result) {
     this->results.push_back(filename + " " + result);
 }
 
-void ResultsProcessor::printResult() {
+std::string ResultsProcessor::getResult() {
+    std::stringstream ss;
     std::sort(this->results.begin(), this->results.end());
     for (unsigned int i = 0; i < this->results.size(); i++) {
-        std::cout << this->results[i] << std::endl;
+        ss << this->results[i] << std::endl;
     }
+    return ss.str();
 }
 

@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 
-Graph::Graph(int V) {
-    this->V = V;
+Graph::Graph(int V) : V(V) {
     adj.resize(V);
 }
 
