@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-FileProcessor::FileProcessor(std::vector <std::string> files) :
+FileProcessor::FileProcessor(const std::vector <std::string> &files) :
         files(files) {}
 
 std::string FileProcessor::getFile() {

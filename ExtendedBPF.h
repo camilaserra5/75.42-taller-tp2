@@ -7,7 +7,7 @@
 
 class ExtendedBPF {
 public:
-    explicit ExtendedBPF(std::string filename);
+    explicit ExtendedBPF(const std::string &filename);
 
     std::string process();
 

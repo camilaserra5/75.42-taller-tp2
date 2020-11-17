@@ -8,7 +8,7 @@
 #include <set>
 #include "Graph.h"
 
-ExtendedBPF::ExtendedBPF(std::string filename) : filename(filename) {}
+ExtendedBPF::ExtendedBPF(const std::string &filename) : filename(filename) {}
 
 std::vector <std::string> split(std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();

@@ -7,7 +7,7 @@
 
 class FileProcessor {
 public:
-    explicit FileProcessor(std::vector <std::string> files);
+    explicit FileProcessor(const std::vector <std::string> &files);
 
     std::string getFile();
 

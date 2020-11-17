@@ -7,7 +7,8 @@
 
 ResultsProcessor::ResultsProcessor() {}
 
-void ResultsProcessor::addResult(std::string filename, std::string result) {
+void ResultsProcessor::addResult(const std::string &filename,
+                                 const std::string &result) {
     Lock l(this->mutex);
     this->results.push_back(filename + " " + result);
 }

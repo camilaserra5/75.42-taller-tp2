@@ -8,7 +8,7 @@ Locker::Locker(FileProcessor &&fileProcessor,
 void Locker::operator()() {
     while (fileProcessor.hasFiles()) {
         std::string filename = fileProcessor.getFile();
-        ExtendedBPF extendedBpf(filename);
+        ExtendedBPF extendedBpf(std::move(filename));
         resultsProcessor.addResult(filename, extendedBpf.process());
     }
 }
