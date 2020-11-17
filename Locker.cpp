@@ -1,5 +1,6 @@
 #include "Locker.h"
 #include <string>
+#include <utility>
 
 Locker::Locker(FileProcessor &&fileProcessor,
                ResultsProcessor &&resultsProcessor) :
